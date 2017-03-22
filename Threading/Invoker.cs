@@ -60,7 +60,7 @@ namespace CashLib.Threading
                 DateTime dieTime = DateTime.Now.AddMilliseconds(timeout);
                 while (!locker)
                 {
-                    Thread.Yield();
+                    System.Threading.Thread.Yield();
                     if (dieTime > DateTime.Now)
                         throw new InvalidProgramException("Thread invoker timeout! A thread may have been terminated or is stuck! This should not occur.");
                 }
@@ -106,7 +106,7 @@ namespace CashLib.Threading
         /// </summary>
         public Invoker()
         {
-            _threadSafety = new ThreadSafetyEnforcer("Generic-CashLib.Shared.Threading.Invoker");
+            _threadSafety = new ThreadSafetyEnforcer("Generic-CashLib.Threading.Invoker");
             _invokeList = new Queue<InvokeItem>();
         }
 
@@ -259,7 +259,7 @@ namespace CashLib.Threading
         /// This is ThreadSafe Enforced and should only be called from the parent thread.
         /// </remarks>
         [ThreadSafe(ThreadSafeFlags.ThreadSafeEnforced)]
-        public void PollInvokes()
+        public virtual void PollInvokes()
         {
             _threadSafety.EnforceThreadSafety();
 

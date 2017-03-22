@@ -98,7 +98,7 @@ namespace CashLib.Threading
         /// </summary>
         private int GetManagedThreadId()
         {
-            return Thread.CurrentThread.ManagedThreadId;
+            return System.Threading.Thread.CurrentThread.ManagedThreadId;
         }
 
         /// <summary>

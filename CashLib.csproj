@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{78870F52-BE99-459A-9A5A-48135D1CAE81}</ProjectGuid>
-    <OutputType>Exe</OutputType>
+    <OutputType>Library</OutputType>
     <RootNamespace>CashLib</RootNamespace>
     <AssemblyName>CashLib</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
@@ -31,7 +31,13 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="C5, Version=2.4.5947.17248, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
+      <HintPath>..\packages\C5.2.4.5947.17249\lib\net45\C5.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
@@ -42,18 +48,45 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
+    <Compile Include="Collection\LimitedList.cs" />
+    <Compile Include="Collection\SortedList.cs" />
+    <Compile Include="Diagnostics\ConsoleTraceListiner.cs" />
+    <Compile Include="Exceptions\ConsoleException.cs" />
+    <Compile Include="Exceptions\InvalidVarableNameExceptions.cs" />
+    <Compile Include="Exceptions\LogicException.cs" />
+    <Compile Include="Exceptions\ModuleLoadException.cs" />
+    <Compile Include="Exceptions\CashLibException.cs" />
+    <Compile Include="ExecutionState.cs" />
+    <Compile Include="Localization\Default.cs" />
+    <Compile Include="Localization\LanguageStrings.cs" />
+    <Compile Include="Module\IComModule.cs" />
+    <Compile Include="Module\ModuleInfo.cs" />
+    <Compile Include="Module\ModuleLoader.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Tasks\Cron\CronField.cs" />
+    <Compile Include="Tasks\Cron\Day.cs" />
+    <Compile Include="Tasks\Cron\Weekday.cs" />
+    <Compile Include="Tasks\Cron\Hour.cs" />
+    <Compile Include="Tasks\Cron\Minute.cs" />
+    <Compile Include="Tasks\Cron\Month.cs" />
+    <Compile Include="Threading\ISchedulerTask.cs" />
+    <Compile Include="Tasks\Scheduler.cs" />
+    <Compile Include="Tasks\Task.cs" />
+    <Compile Include="Tasks\TaskTime.cs" />
+    <Compile Include="TConsole.cs" />
     <Compile Include="Threading\IInvokable.cs" />
     <Compile Include="Threading\InvokeItem.cs" />
     <Compile Include="Threading\InvokeManager.cs" />
     <Compile Include="Threading\Invoker.cs" />
+    <Compile Include="Threading\Thread.cs" />
     <Compile Include="Threading\ThreadSafeAttribute.cs" />
     <Compile Include="Threading\ThreadSafeFlags.cs" />
     <Compile Include="Threading\ThreadSafetyEnforcer.cs" />
+    <Compile Include="Timer.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

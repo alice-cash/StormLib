@@ -4,12 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashLib
+namespace CashLib.Threading
 {
-    class Program
+    public interface IThreadTask
     {
-        static void Main(string[] args)
-        {
-        }
+        void RunTask();
     }
 }
