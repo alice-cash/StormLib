@@ -41,7 +41,7 @@ using CashLib.Exceptions;
 
 namespace CashLib
 {
-    public enum ConsoleCommandSucess
+    public enum ConsoleCommandState
     {
         Sucess,
         Failure
@@ -49,21 +49,35 @@ namespace CashLib
 
     public struct ConsoleFunction
     {
-        public System.Func<string[], ConsoleResponce> Function;
+        public System.Func<string[], ConsoleResponse> Function;
         public string HelpInfo;
+        public delegate TabData GetTabCompletionValues(string line);
+        public GetTabCompletionValues TabFunction;
     }
-    public struct ConsoleResponce
+    public struct TabData
+    {
+        public bool Result { get; set; }
+        public string Line { get; set; }
+        public string[] TabStrings { get; set; }
+
+        public static TabData Failue()
+        {
+            return new TabData() { Result = false };
+        }
+    }
+
+    public struct ConsoleResponse
     {
         public string Value;
-        public ConsoleCommandSucess Sucess;
+        public ConsoleCommandState State;
 
-        public static ConsoleResponce NewSucess(string data)
+        public static ConsoleResponse NewSucess(string data)
         {
-            return new ConsoleResponce() { Sucess = ConsoleCommandSucess.Sucess, Value = data };
+            return new ConsoleResponse() { State = ConsoleCommandState.Sucess, Value = data };
         }
-        public static ConsoleResponce NewFailure(string data)
+        public static ConsoleResponse NewFailure(string data)
         {
-            return new ConsoleResponce() { Sucess = ConsoleCommandSucess.Failure, Value = data };
+            return new ConsoleResponse() { State = ConsoleCommandState.Failure, Value = data };
         }
     }
     public struct ConsoleVarable
@@ -71,6 +85,8 @@ namespace CashLib
         public string Value;
         public string HelpInfo;
         public Func<string, ExecutionState> ValidCheck;
+        public delegate TabData GetTabCompletionValues(string line);
+        public GetTabCompletionValues TabFunction;
 
         public override string ToString()
         {
@@ -116,18 +132,31 @@ namespace CashLib
 
             ConsoleFunction ConsoleHelp = new ConsoleFunction() {
                 Function = ConsoleHelpFunc,
-                HelpInfo = DefaultLanguage.Strings.GetString("Console_Help_Help")
+                HelpInfo = DefaultLanguage.Strings.GetString("Console_Help_Help"),
+                TabFunction = ConsoleHelpTab                
             };
             
             SetFunc("help", ConsoleHelp);
 
         }
 
-        static ConsoleResponce ConsoleHelpFunc(string[] data)
+        static TabData ConsoleHelpTab(string line)
         {
-            ConsoleResponce cr = new ConsoleResponce()
+            string[] split = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            string subLine = "";
+            if (split.Length > 2) return TabData.Failue();
+            if (split.Length == 2) subLine = split[1];
+
+            TabData data = TabInput(subLine);
+            data.Line = split[0] + " " + data.Line;
+            return data;
+        }
+
+        static ConsoleResponse ConsoleHelpFunc(string[] data)
+        {
+            ConsoleResponse cr = new ConsoleResponse()
             {
-                Sucess = ConsoleCommandSucess.Sucess,
+                State = ConsoleCommandState.Sucess,
                 Value = ""
             };
 
@@ -204,13 +233,13 @@ namespace CashLib
                 return _varables.Contains(name);
         }
 
-        public static ConsoleResponce ExecuteFunc(string name, params string[] args)
+        public static ConsoleResponse ExecuteFunc(string name, params string[] args)
         {
             lock (_varables)
             {
-                ConsoleResponce cr = new ConsoleResponce()
+                ConsoleResponse cr = new ConsoleResponse()
                 {
-                    Sucess = ConsoleCommandSucess.Failure,
+                    State = ConsoleCommandState.Failure,
                     Value = ""
                 };
 
@@ -250,14 +279,93 @@ namespace CashLib
                 return _functions.Contains(name);
         }
 
-        public static ConsoleResponce ProcessLine(string line)
+        public static TabData TabInput(string line)
+        {
+            string[] matches;
+            lock (_varables)
+            {
+                line = line.TrimStart();
+                if (line.Contains(" "))
+                {
+                    TabData subResponse;
+                    string[] split = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    string trimline = split[0];
+
+                    //Get possible results from module. 
+                    if (_varables.Contains(trimline))
+                        if (_varables[trimline].TabFunction == null)
+                            return TabData.Failue();
+                        else
+                            subResponse = _varables[trimline].TabFunction(line);
+                    else if (_functions.Contains(trimline))
+                        if (_functions[trimline].TabFunction == null)
+                            return TabData.Failue();
+                        else
+                            subResponse = _functions[trimline].TabFunction(line);
+                    else return TabData.Failue();
+
+                    if (subResponse.Result == false)
+                        return TabData.Failue();
+
+                    line = subResponse.Line;
+
+                    if (subResponse.TabStrings == null || subResponse.TabStrings.Length == 0)
+                        return new TabData() { Result = true, Line = line };
+                    if (subResponse.TabStrings.Length == 1)
+                        return new TabData() { Result = true, Line = subResponse.TabStrings[0] };
+
+                    matches = subResponse.TabStrings;
+                }
+                else
+                {
+                    SortedList<string> sortedMatches = new SortedList<string>(StringComparer.CurrentCultureIgnoreCase);
+                    foreach (string name in _varables.Keys)
+                        if (name.StartsWith(line))
+                            sortedMatches.Add(name);
+                    foreach (string name in _functions.Keys)
+                        if (name.StartsWith(line))
+                            sortedMatches.Add(name);
+
+                    if (sortedMatches.Count == 0)
+                        return new TabData() { Result = false };
+                    if (sortedMatches.Count == 1)
+                        return new TabData() { Result = true, Line = sortedMatches[0] }; ;
+
+                    //Expand it out to match the closest match of any.
+                    matches = sortedMatches.ToArray();
+                }
+            }
+
+            int length = line.Length;
+
+            char c;
+            while (matches[0].Length > length)
+            {
+                //length is always 1 more than the index,
+                //this means a length of 1 will attempt to grab an index of 2;
+                c = matches[0][length];
+                foreach (string entry in matches)
+                {
+                    if (entry.Length == length || entry[length] != c)
+                        goto @break; //no point in continuing                        
+                }
+                line += c;
+                length++;
+            }
+            @break:;
+
+            return new TabData() { Result = true, Line = line, TabStrings = matches };
+
+        }
+
+        public static ConsoleResponse ProcessLine(string line)
         {
             line = line.Trim();
             lock (_varables)
             {
-                ConsoleResponce cr = new ConsoleResponce()
+                ConsoleResponse cr = new ConsoleResponse()
                 {
-                    Sucess = ConsoleCommandSucess.Sucess,
+                    State = ConsoleCommandState.Sucess,
                 };
                 
                 if (line == "")
@@ -292,7 +400,7 @@ namespace CashLib
                         value = value.Remove(0, 1);
                         value = value.Trim();
                     }
-                    if (_varables[name].ValidCheck(value))
+                    if (_varables[name].ValidCheck == null || _varables[name].ValidCheck(value).Sucess)
                     {
                         ConsoleVarable cv = _varables[name];
                         cv.Value = value;
@@ -303,17 +411,16 @@ namespace CashLib
                     }
                     else
                     {
-                        cr.Sucess = ConsoleCommandSucess.Failure;
+                        cr.State = ConsoleCommandState.Failure;
                         cr.Value = DefaultLanguage.Strings.GetFormatedString("Console_Validation_Failure", name, value);
                         return cr;
                     }
-                }
-                if (_functions.Contains(name))
+                } else if (_functions.Contains(name))
                 {
                     return ExecuteFunc(name, ArgSplit(value, true));
                 }
 
-                cr.Sucess = ConsoleCommandSucess.Failure;
+                cr.State = ConsoleCommandState.Failure;
                 cr.Value = DefaultLanguage.Strings.GetFormatedString("Console_Unknown_Varable", name);
 
                 return cr;
@@ -359,7 +466,7 @@ namespace CashLib
                     else if (_functions.Contains(varableName))
                     {
                         var result = ExecuteFunc(varableName, ArgSplit(VarableArguments, true));
-                        if (result.Sucess == ConsoleCommandSucess.Failure)
+                        if (result.State == ConsoleCommandState.Failure)
                             System.Diagnostics.Debug.WriteLine(result.Value);
                     }
                 }

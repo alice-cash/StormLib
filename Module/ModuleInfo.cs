@@ -64,14 +64,22 @@ namespace CashLib.Module
             //we simply use reflection to call a loading class for each module.
             foreach (Type type in target.GetTypes())
             {
-                if (type.BaseType == typeof(ModuleLoader))
+                if (InterfaceTest(type))
                 {
-                    ModuleLoader ml = Activator.CreateInstance(type) as ModuleLoader;
+                    IModuleLoader ml = Activator.CreateInstance(type) as IModuleLoader;
                     if (ml == null) continue;
                     Debug.WriteLine(string.Format("Found Module \"{0}\", Version {1}", ml.Name, ml.Version));
                     ml.Load();
                 }
             }
+        }
+
+        private static bool InterfaceTest(Type type)
+        {
+            foreach (Type @interface in type.GetInterfaces())
+                if (@interface == typeof(IModuleLoader))
+                    return true;
+            return false;
         }
 	}
 }

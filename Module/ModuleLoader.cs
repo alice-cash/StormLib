@@ -32,10 +32,10 @@ namespace CashLib.Module
 	/// <summary>
 	/// Description of ModuleLoader.
 	/// </summary>
-	public abstract class ModuleLoader
+	public interface IModuleLoader
 	{
-		public abstract Version Version{get;}
-		public abstract string Name{get;}
-		public abstract void Load();
-	}
+		Version Version{get;}
+		string Name{get;}
+		void Load();
+    }
 }
