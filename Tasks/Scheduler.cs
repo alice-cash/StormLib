@@ -35,13 +35,13 @@ namespace CashLib.Tasks
 {
     public class Scheduler: Invoker, IThreadTask
     {
-        List<Task> _tasks;
+        List<CronTask> _tasks;
         DateTime _nextTick = DateTime.Now.AddSeconds(1);
 
 
         public Scheduler(string name) : base("Scheduler: " + name)
         {
-            _tasks = new List<Task>();
+            _tasks = new List<CronTask>();
             DateTime now = DateTime.Now;
             _nextTick = new DateTime(now.Year, now.Month,now.Day,now.Hour,now.Minute, 0);
         }
@@ -49,11 +49,11 @@ namespace CashLib.Tasks
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
         public void AddTask(string input, Action command)
         {
-            AddTask(new Task(input, command));
+            AddTask(new CronTask(input, command));
         }
 
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
-        public void AddTask(Task task)
+        public void AddTask(CronTask task)
         {
             this.InvokeMethod(() => { _tasks.Add(task); });
         }
@@ -63,7 +63,7 @@ namespace CashLib.Tasks
             if(DateTime.Now >= _nextTick)
             {
                 _nextTick = _nextTick.AddSeconds(1);
-                foreach (Task task in _tasks)
+                foreach (CronTask task in _tasks)
                 {
                     task.CheckTaskTime();
                 }

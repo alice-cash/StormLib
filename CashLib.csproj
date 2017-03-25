@@ -71,7 +71,7 @@
     <Compile Include="Tasks\Cron\Month.cs" />
     <Compile Include="Threading\IThreadTask.cs" />
     <Compile Include="Tasks\Scheduler.cs" />
-    <Compile Include="Tasks\Task.cs" />
+    <Compile Include="Tasks\CronTask.cs" />
     <Compile Include="TConsole.cs" />
     <Compile Include="Threading\IInvokable.cs" />
     <Compile Include="Threading\InvokeItem.cs" />

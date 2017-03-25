@@ -79,6 +79,10 @@ namespace CashLib
         {
             return new ConsoleResponse() { State = ConsoleCommandState.Failure, Value = data };
         }
+        public static ConsoleResponse NewFailure()
+        { 
+            return new ConsoleResponse() { State = ConsoleCommandState.Failure, Value = "" };
+        }
     }
     public struct ConsoleVarable
     {
@@ -193,14 +197,23 @@ namespace CashLib
             }
         }
 
-        public static ConsoleVarable GetValue(string name)
+        public static ConsoleResponse GetValue(string name)
+        {
+            lock (_varables)
+                if (ValueContains(name))
+                {
+                    return ConsoleResponse.NewSucess(_varables[name].Value);
+                }
+            return ConsoleResponse.NewFailure();
+        }
+
+        public static ConsoleVarable GetVariable(string name)
         {
             lock (_varables)
                 if (ValueContains(name))
                 {
                     return _varables[name];
                 }
-            //this is called by normal code, so throw a normal exception!
             throw new InvalidVarableNameExceptions(string.Format("{0} does not exist", name));
         }
 
@@ -427,25 +440,78 @@ namespace CashLib
             }
         }
 
-        public static void ProcessFile(string fileName)
+        public static void SaveToFile(string filename, string[] variables, bool isFullPath = false, bool hardfail = false)
         {
+            if (!isFullPath)
+                filename = Environment.CurrentDirectory + "/" + filename;
             lock (_varables)
             {
-                if (!File.Exists(fileName))
-                    throw new FileNotFoundException("Could not find {0}", fileName);
+                FileStream fileHandle;
+                if (!File.Exists(filename))
+                {
+                    try
+                    {
+                        fileHandle = File.Create(filename);
+                    }
+                    catch (Exception e)
+                    {
+                        if (hardfail)
+                            throw new FileNotFoundException("Could not open file {0}.", e.ToString());
+                        else
+                        {
+                            WriteLine("Could not open file {0}.", e.ToString());
+                            return;
+                        }
+                    }
+                } else {
+                    fileHandle = File.OpenWrite(filename);
+                }
+
+                StreamWriter sw = new StreamWriter(fileHandle);
+                ConsoleResponse currentValue;
+                foreach (string name in variables)
+                {
+                    currentValue = GetValue(name);
+                    if (currentValue.State == ConsoleCommandState.Failure)
+                        if (hardfail)
+                            throw new InvalidVarableNameExceptions(string.Format("{0} does not exist", name));
+                        else
+                            continue;
+                    sw.WriteLine("{0}={1}", name, currentValue.Value);
+                }
+                sw.Flush();
+                sw.Close();
+            }
+        }
+
+        public static void ProcessFile(string filename, bool isFullPath = false, bool hardfail = false)
+        {
+            if (!isFullPath)
+                filename = Environment.CurrentDirectory + "/" + filename;
+            lock (_varables)
+            {
+                if (!File.Exists(filename))
+                    if (hardfail)
+                        throw new FileNotFoundException("Could not load file.", filename);
+                    else
+                    {
+                        WriteLine("Could not find {0}.", filename);
+                                return;
+                    }
+                WriteLine("Loading file {0}", filename);
 
                 string line, varableName, VarableArguments;
                 int pos;
-                foreach (string l in File.ReadAllLines(fileName))
+                foreach (string l in File.ReadAllLines(filename))
                 {
                     line = l.Trim();
                     if (line.StartsWith("#")) continue;
                     if (!line.Contains(" ") && !line.Contains("\t")) continue;
 
-                    //We need to stop at the first space or \t.
+                    //We need to stop at the first space, \t, or =.
                     for (pos = 0; pos < line.Length; pos++)
                     {
-                        if (line[pos] == ' ' || line[pos] == '\t')
+                        if (line[pos] == ' ' || line[pos] == '\t' || line[pos] == '=')
                             break;
                     }
 
@@ -467,7 +533,7 @@ namespace CashLib
                     {
                         var result = ExecuteFunc(varableName, ArgSplit(VarableArguments, true));
                         if (result.State == ConsoleCommandState.Failure)
-                            System.Diagnostics.Debug.WriteLine(result.Value);
+                            Debug.WriteLine(result.Value);
                     }
                 }
 
