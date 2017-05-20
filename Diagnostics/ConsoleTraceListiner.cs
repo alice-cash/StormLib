@@ -11,12 +11,12 @@ namespace CashLib.Diagnostics
 
         public override void Write(string message)
         {
-            TConsole.WriteToBacklog(message, false);
+            Console.WriteToBacklog(message, false);
         }
 
         public override void WriteLine(string message)
         {
-            TConsole.WriteToBacklog(message, true);
+            Console.WriteToBacklog(message, true);
         }
     }
 }

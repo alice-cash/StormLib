@@ -118,7 +118,7 @@ namespace CashLib
     /// <summary>
     /// This is the back end for the Console system.
     /// </summary>
-    public static class TConsole
+    public static class Console
     {
         private static HashDictionary<string, ConsoleVarable> _varables;
         private static HashDictionary<string, ConsoleFunction> _functions;
@@ -446,12 +446,12 @@ namespace CashLib
                 filename = Environment.CurrentDirectory + "/" + filename;
             lock (_varables)
             {
-                FileStream fileHandle;
-                if (!File.Exists(filename))
+                List<string> fileLines;
+                if (File.Exists(filename))
                 {
                     try
                     {
-                        fileHandle = File.Create(filename);
+                        fileLines = new List<string>(File.ReadAllLines(filename));
                     }
                     catch (Exception e)
                     {
@@ -463,11 +463,11 @@ namespace CashLib
                             return;
                         }
                     }
-                } else {
-                    fileHandle = File.OpenWrite(filename);
+                } else
+                {
+                    fileLines = new List<string>();
                 }
 
-                StreamWriter sw = new StreamWriter(fileHandle);
                 ConsoleResponse currentValue;
                 foreach (string name in variables)
                 {
@@ -477,11 +477,67 @@ namespace CashLib
                             throw new InvalidVarableNameExceptions(string.Format("{0} does not exist", name));
                         else
                             continue;
-                    sw.WriteLine("{0}={1}", name, currentValue.Value);
+                    //for(int lineid = 0; lineid < fileLines.Count; lineid++)
+                    //{
+                        SetFileValue(fileLines, name, currentValue.Value);
+                    //}
                 }
-                sw.Flush();
-                sw.Close();
+
+                try
+                {
+                    File.WriteAllLines(filename, fileLines.ToArray());
+                }
+                catch (Exception e)
+                {
+                    if (hardfail)
+                        throw new FileNotFoundException("Could not open file {0}.", e.ToString());
+                    else
+                    {
+                        WriteLine("Could not open file {0}.", e.ToString());
+                        return;
+                    }
+                }
             }
+        }
+
+        private static void SetFileValue(List<string> array, string key, string value)
+        {
+            for(int i = 0; i < array.Count; i++)
+            {
+                if (array[i].StartsWith(key))
+                {
+                    if(array[i].Length == key.Length)
+                    {
+                        array[i] = string.Format("{0}={1}", key, value);
+                        return;
+                    }
+                    if (array[i][key.Length] == ' ' || array[i][key.Length] == '\t' || array[i][key.Length] == '=')
+                    {
+                        //We want to preserve any space / tab / equals fuckery thats in the config
+                        //I sort of regret that requirement
+
+                        int pos, pos2;
+                        //We need to stop at the first space, \t, or =.
+                        for (pos = 0; pos < array[i].Length; pos++)
+                        {
+                            if (array[i][pos] == ' ' || array[i][pos] == '\t' || array[i][pos] == '=')
+                                break;
+                        }
+
+                        //Now we keep counting until we hit a non delimer
+                        for (pos2 = pos; pos2 < array[i].Length; pos2++)
+                        {
+                            if (array[i][pos2] != ' ' && array[i][pos2] != '\t' && array[i][pos2] != '=')
+                                break;
+                        }
+
+                        array[i] = string.Format("{0}{1}{2}", key, array[i].Substring(pos, pos2 - pos), value);
+                        return;
+                    }
+                    //If it didn't match it falls through to the next line
+                }
+            }
+            array.Add(string.Format("{0}={1}", key, value));
         }
 
         public static void ProcessFile(string filename, bool isFullPath = false, bool hardfail = false)
@@ -501,12 +557,12 @@ namespace CashLib
                 WriteLine("Loading file {0}", filename);
 
                 string line, varableName, VarableArguments;
-                int pos;
+                int pos, pos2;
                 foreach (string l in File.ReadAllLines(filename))
                 {
                     line = l.Trim();
                     if (line.StartsWith("#")) continue;
-                    if (!line.Contains(" ") && !line.Contains("\t")) continue;
+                    if (!line.Contains(" ") && !line.Contains("\t") && !line.Contains("=")) continue;
 
                     //We need to stop at the first space, \t, or =.
                     for (pos = 0; pos < line.Length; pos++)
@@ -515,9 +571,16 @@ namespace CashLib
                             break;
                     }
 
+                    //Now we keep counting until we hit a non delimer
+                    for (pos2 = pos; pos2 < line.Length; pos2++)
+                    {
+                        if (line[pos2] != ' ' && line[pos2] != '\t' && line[pos2] != '=')
+                            break;
+                    }
+
                     varableName = line.Substring(0, pos);
 
-                    VarableArguments = line.Substring(pos);
+                    VarableArguments = line.Substring(pos2);
                     VarableArguments = VarableArguments.Trim();
                     if (_varables.Contains(varableName))
                     {
