@@ -520,15 +520,22 @@ namespace CashLib
                         //We need to stop at the first space, \t, or =.
                         for (pos = 0; pos < array[i].Length; pos++)
                         {
-                            if (array[i][pos] == ' ' || array[i][pos] == '\t' || array[i][pos] == '=')
+                            if (array[i][pos] == ' ' || array[i][pos] == '\t' || array[i][pos] == '=' )
+                            {
                                 break;
+                            }
                         }
 
+                        bool isequals = false;
+                        if (array[i][pos] == '=') isequals = true;
+
                         //Now we keep counting until we hit a non delimer
-                        for (pos2 = pos; pos2 < array[i].Length; pos2++)
+                        for (pos2 = pos + 1; pos2 < array[i].Length; pos2++)
                         {
-                            if (array[i][pos2] != ' ' && array[i][pos2] != '\t' && array[i][pos2] != '=')
+                            if (array[i][pos2] != ' ' && array[i][pos2] != '\t' && 
+                                (array[i][pos2] != '=' || (isequals && array[i][pos2] == '=')))
                                 break;
+                            if (array[i][pos2] == '=') isequals = true;
                         }
 
                         array[i] = string.Format("{0}{1}{2}", key, array[i].Substring(pos, pos2 - pos), value);
@@ -557,9 +564,10 @@ namespace CashLib
                 WriteLine("Loading file {0}", filename);
 
                 string line, varableName, VarableArguments;
-                int pos, pos2;
+                int pos, pos2, linenumber = 0;
                 foreach (string l in File.ReadAllLines(filename))
                 {
+                    linenumber++;
                     line = l.Trim();
                     if (line.StartsWith("#")) continue;
                     if (!line.Contains(" ") && !line.Contains("\t") && !line.Contains("=")) continue;
@@ -571,11 +579,16 @@ namespace CashLib
                             break;
                     }
 
+                    bool isequals = false;
+                    if (line[pos] == '=') isequals = true;
+
                     //Now we keep counting until we hit a non delimer
-                    for (pos2 = pos; pos2 < line.Length; pos2++)
+                    for (pos2 = pos + 1; pos2 < line.Length; pos2++)
                     {
-                        if (line[pos2] != ' ' && line[pos2] != '\t' && line[pos2] != '=')
+                        if (line[pos2] != ' ' && line[pos2] != '\t' && 
+                            (line[pos2] != '=' || (isequals && line[pos2] == '=')))
                             break;
+                        if (line[pos2] == '=') isequals = true;
                     }
 
                     varableName = line.Substring(0, pos);
@@ -584,19 +597,29 @@ namespace CashLib
                     VarableArguments = VarableArguments.Trim();
                     if (_varables.Contains(varableName))
                     {
-                        if (_varables[varableName].ValidCheck != null && _varables[varableName].ValidCheck(VarableArguments).Sucess)
+                        if (_varables[varableName].ValidCheck != null)
                         {
-                            ConsoleVarable cv = _varables[varableName];
-                            cv.Value = VarableArguments;
-                            _varables[varableName] = cv;
+                            ExecutionState Check = _varables[varableName].ValidCheck(VarableArguments);
+                            if(!Check)
+                            {
+                                WriteLine("Failed to parse line {0}: {1}", linenumber.ToString(), Check.Reason);
+                                continue;
+                            }
                         }
+
+                        ConsoleVarable cv = _varables[varableName];
+                        cv.Value = VarableArguments;
+                        _varables[varableName] = cv;
+                        
 
                     }
                     else if (_functions.Contains(varableName))
                     {
                         var result = ExecuteFunc(varableName, ArgSplit(VarableArguments, true));
                         if (result.State == ConsoleCommandState.Failure)
-                            Debug.WriteLine(result.Value);
+                            WriteLine("Failed to parse line {0}: {1}", linenumber.ToString(), result.Value);
+                        if (result.State == ConsoleCommandState.Sucess && result.Value != "")
+                            WriteLine(result.Value);
                     }
                 }
 
