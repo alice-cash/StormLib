@@ -46,6 +46,16 @@ namespace CashLib.Tasks
             _nextTick = new DateTime(now.Year, now.Month,now.Day,now.Hour,now.Minute, 0);
         }
 
+        public void Start()
+        { 
+
+        }
+
+        public void Stop()
+        {
+
+        }
+
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
         public void AddTask(string input, Action command)
         {

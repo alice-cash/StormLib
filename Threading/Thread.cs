@@ -31,7 +31,7 @@ namespace CashLib.Threading
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
         public void AddTask(IThreadTask task)
         {
-            this.InvokeMethod(() => { _tasks.Add(task); });
+            this.InvokeMethod(() => { _tasks.Add(task); task.Start(); });
         }
 
         /// <summary>
@@ -41,7 +41,15 @@ namespace CashLib.Threading
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
         public void Stop()
         {
-            this.InvokeMethod(() => { _threadRunning = false; });
+            this.InvokeMethod(() => { _threadRunning = false; SendStop(); });
+        }
+
+        private void SendStop()
+        {
+            foreach (IThreadTask task in _tasks)
+            {
+                task.Stop();
+            }
         }
 
         private void ThreadLoop()

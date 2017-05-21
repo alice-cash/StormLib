@@ -61,7 +61,7 @@ namespace CashLib.Threading
                 while (!locker)
                 {
                     System.Threading.Thread.Yield();
-                    if (dieTime > DateTime.Now)
+                    if (dieTime < DateTime.Now)
                         throw new InvalidProgramException("Thread invoker timeout! A thread may have been terminated or is stuck! This should not occur.");
                 }
             }            
@@ -121,13 +121,10 @@ namespace CashLib.Threading
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
         public void InvokeMethod(System.Action<object> methodToInvoke, object data)
         {
-            if (InvokeRequired())
-                lock (_invokeList)
-                {
-                    _invokeList.Enqueue(new InvokeItem(methodToInvoke, data));
-                }
-            else
-                methodToInvoke(data);
+            lock (_invokeList)
+            {
+                _invokeList.Enqueue(new InvokeItem(methodToInvoke, data));
+            }
         }
 
         /// <summary>
@@ -141,13 +138,10 @@ namespace CashLib.Threading
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
         public void InvokeMethod(System.Action methodToInvoke)
         {
-            if (InvokeRequired())
-                lock (_invokeList)
-                {
-                    _invokeList.Enqueue(new InvokeItem((object e) => { methodToInvoke(); }, null));
-                }
-            else
-                methodToInvoke();
+            lock (_invokeList)
+            {
+                _invokeList.Enqueue(new InvokeItem((object e) => { methodToInvoke(); }, null));
+            }
         }
 
         /// <summary>

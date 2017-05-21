@@ -84,6 +84,26 @@ namespace CashLib
             return new ConsoleResponse() { State = ConsoleCommandState.Failure, Value = "" };
         }
     }
+
+    public struct ConsoleResponseBoolean
+    {
+        public bool Value;
+        public ConsoleCommandState State;
+
+        public static ConsoleResponseBoolean NewSucess(bool data)
+        {
+            return new ConsoleResponseBoolean() { State = ConsoleCommandState.Sucess, Value = data };
+        }
+        public static ConsoleResponseBoolean NewFailure(bool data)
+        {
+            return new ConsoleResponseBoolean() { State = ConsoleCommandState.Failure, Value = data };
+        }
+        public static ConsoleResponseBoolean NewFailure()
+        {
+            return new ConsoleResponseBoolean() { State = ConsoleCommandState.Failure, Value = false };
+        }
+    }
+
     public struct ConsoleVarable
     {
         public string Value;
@@ -98,17 +118,32 @@ namespace CashLib
         }
 
 
-        public static ConsoleVarable OnOffVarable(string HelpInfo)
+        public static ConsoleVarable OnOffVarable(string HelpInfo, bool value = false)
         {
-            return new ConsoleVarable() { Value = "0", ValidCheck = ValidCheckMethod_0_1, HelpInfo = HelpInfo };
+            return new ConsoleVarable() { Value = value ? "true": "false", ValidCheck = ValidCheckMethod_0_1, HelpInfo = HelpInfo };
+        }
+
+        public static ExecutionState<bool> OnOff(string t)
+        {
+            if (!ValidCheckMethod_0_1(t))
+                return ExecutionState<bool>.Failed(string.Format("Variable {0} is not a "));
+
+            t = t.Trim().ToLower();
+            if (t == "true" || t == "on" || t == "enable" || t == "1")
+                return ExecutionState<bool>.Succeeded(true);
+            if (t == "false" || t == "off" || t == "disable" || t == "0")
+                return ExecutionState<bool>.Succeeded(false);
+
+            throw new LogicException("Value passed ValidCheckMethod but did not match any values!");
         }
 
         public static ExecutionState ValidCheckMethod_0_1(string t)
         {
-            t = t.Trim();
-            if (t == "0" || t == "1")
+            t = t.Trim().ToLower();
+            string[] allowed = new string[] { "true", "on", "enable", "false", "off", "disable", "0", "1" };
+            if (allowed.Contains(t))
                 return ExecutionState.Succeeded();
-            return ExecutionState.Failed("Value must be 0 or 1.");
+            return ExecutionState.Failed("Value must be [0|off|false|disable] or [1|on|true|enable].");
         }
 
     }
@@ -206,6 +241,19 @@ namespace CashLib
                 }
             return ConsoleResponse.NewFailure();
         }
+
+        public static ConsoleResponseBoolean GetOnOff(string name)
+        {
+            lock (_varables)
+                if (ValueContains(name))
+                {
+                    var test = ConsoleVarable.OnOff(_varables[name].Value);
+                    if (test.Sucess)
+                        return ConsoleResponseBoolean.NewSucess(test.Result);
+                }
+            return ConsoleResponseBoolean.NewFailure();
+        }
+
 
         public static ConsoleVarable GetVariable(string name)
         {
@@ -323,9 +371,9 @@ namespace CashLib
                     line = subResponse.Line;
 
                     if (subResponse.TabStrings == null || subResponse.TabStrings.Length == 0)
-                        return new TabData() { Result = true, Line = line };
+                        return new TabData() { Result = true, Line = trimline + " " + line };
                     if (subResponse.TabStrings.Length == 1)
-                        return new TabData() { Result = true, Line = subResponse.TabStrings[0] };
+                        return new TabData() { Result = true, Line = trimline + " " + subResponse.TabStrings[0] };
 
                     matches = subResponse.TabStrings;
                 }
@@ -696,10 +744,19 @@ namespace CashLib
 
         public static void WriteLine(string s, params string[] format)
         {
+            if (s == null)
+                return;
+            
             Trace.WriteLine(string.Format(s, format));
         }
 
+        public static void WriteLine(string s, params object[] format)
+        {
+            if (s == null)
+                return;
 
+            Trace.WriteLine(string.Format(s, format));
+        }
 
 
     }

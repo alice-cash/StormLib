@@ -9,5 +9,7 @@ namespace CashLib.Threading
     public interface IThreadTask
     {
         void RunTask();
+        void Start();
+        void Stop();
     }
 }
