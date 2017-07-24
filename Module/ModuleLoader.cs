@@ -29,9 +29,9 @@ using System;
 
 namespace CashLib.Module
 {
-	//  <summary>
-	//  Description of ModuleLoader.
-	//  </summary>
+	///  <summary>
+	///  Description of ModuleLoader.
+	///  </summary>
 	public interface IModuleLoader
 	{
 		Version Version{get;}

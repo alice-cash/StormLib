@@ -34,9 +34,9 @@ using System.Collections.Generic;
 
 namespace CashLib.Module
 {
-	//  <summary>
-	//  Description of ModuleInfo.
-	//  </summary>
+	///  <summary>
+	///  Description of ModuleInfo.
+	///  </summary>
 	public static class ModuleInfo
 	{
         ///  <summary>
@@ -61,7 +61,7 @@ namespace CashLib.Module
 
         private static void LoadAssemblyModules(Assembly target)
         {
-            // e simply use reflection to call a loading class for each module.
+            //We simply use reflection to call a loading class for each module.
             foreach (Type type in target.GetTypes())
             {
                 if (InterfaceTest(type))

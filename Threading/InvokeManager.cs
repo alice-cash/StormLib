@@ -36,12 +36,12 @@ namespace CashLib.Threading
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
         public void GiveInvokerTo(InvokeManager target, Invoker item)
         {
-            // f an invoke is not required for the target then it is running on the same thread as us.
+            // If an invoke is not required for the target then it is running on the same thread as us.
             if(target.InvokeRequired())
                 this.InvokeMethod(() => { SynchronousGiveInvokerTo(target, item); });
             else
             {
-                // e can just reassign it since the thread runs both objects.
+                // We can just reassign it since the thread runs both objects.
                 target._invokers.Add(item);
                 this._invokers.Remove(item);
             }

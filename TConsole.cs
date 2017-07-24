@@ -187,7 +187,7 @@ namespace CashLib
             if (split.Length == 2) subLine = split[1];
 
             TabData data = TabInput(subLine);
-            // ata.Line = split[0] + " " + data.Line;
+            //Data.Line = split[0] + " " + data.Line;
             return data;
         }
 
@@ -376,7 +376,7 @@ namespace CashLib
                     TabData subResponse;
                     string trimline = split[0];
 
-                    // et possible results from module. 
+                    //Get possible results from module. 
                     if (_varables.Contains(trimline))
                         if (_varables[trimline].TabFunction == null)
                             return TabData.Failue();
@@ -416,7 +416,7 @@ namespace CashLib
                     if (sortedMatches.Count == 1)
                         return new TabData() { Result = true, Line = sortedMatches[0] }; ;
 
-                    // xpand it out to match the closest match of any.
+                    // Expand it out to match the closest match of any.
                     matches = sortedMatches.ToArray();
                 }
             }
@@ -428,13 +428,13 @@ namespace CashLib
                 char c;
                 while (matches[0].Length > length)
                 {
-                    // ength is always 1 more than the index,
-                    // his means a length of 1 will attempt to grab an index of 2;
+                    // Length is always 1 more than the index,
+                    // This means a length of 1 will attempt to grab an index of 2;
                     c = matches[0][length];
                     foreach (string entry in matches)
                     {
                         if (entry.Length == length || (entry.Length > length && entry[length] != c))
-                            goto @break; // o point in continuing                        
+                            goto @break; // No point in continuing                        
                     }
                     line += c;
                     length++;
@@ -552,10 +552,10 @@ namespace CashLib
                             throw new InvalidVarableNameExceptions(string.Format("{0} does not exist", name));
                         else
                             continue;
-                    // or(int lineid = 0; lineid < fileLines.Count; lineid++)
-                    // 
-                        SetFileValue(fileLines, name, currentValue.Value);
-                    // 
+                    //for(int lineid = 0; lineid < fileLines.Count; lineid++)
+                    //
+                   SetFileValue(fileLines, name, currentValue.Value);
+                    //
                 }
 
                 try
@@ -588,11 +588,11 @@ namespace CashLib
                     }
                     if (array[i][key.Length] == ' ' || array[i][key.Length] == '\t' || array[i][key.Length] == '=')
                     {
-                        // e want to preserve any space / tab / equals fuckery thats in the config
+                        // We want to preserve any space / tab / equals fuckery thats in the config
                         ///  sort of regret that requirement
 
                         int pos, pos2;
-                        // e need to stop at the first space, \t, or =.
+                        // We need to stop at the first space, \t, or =.
                         for (pos = 0; pos < array[i].Length; pos++)
                         {
                             if (array[i][pos] == ' ' || array[i][pos] == '\t' || array[i][pos] == '=' )
@@ -604,7 +604,7 @@ namespace CashLib
                         bool isequals = false;
                         if (array[i][pos] == '=') isequals = true;
 
-                        // ow we keep counting until we hit a non delimer
+                        // Now we keep counting until we hit a non delimer
                         for (pos2 = pos + 1; pos2 < array[i].Length; pos2++)
                         {
                             if (array[i][pos2] != ' ' && array[i][pos2] != '\t' && 
@@ -616,7 +616,7 @@ namespace CashLib
                         array[i] = string.Format("{0}{1}{2}", key, array[i].Substring(pos, pos2 - pos), value);
                         return;
                     }
-                    // f it didn't match it falls through to the next line
+                    // If it didn't match it falls through to the next line
                 }
             }
             array.Add(string.Format("{0}={1}", key, value));
@@ -647,7 +647,7 @@ namespace CashLib
                     if (line.StartsWith("#")) continue;
                     if (!line.Contains(" ") && !line.Contains("\t") && !line.Contains("=")) continue;
 
-                    // e need to stop at the first space, \t, or =.
+                    // We need to stop at the first space, \t, or =.
                     for (pos = 0; pos < line.Length; pos++)
                     {
                         if (line[pos] == ' ' || line[pos] == '\t' || line[pos] == '=')
@@ -657,7 +657,7 @@ namespace CashLib
                     bool isequals = false;
                     if (line[pos] == '=') isequals = true;
 
-                    // ow we keep counting until we hit a non delimer
+                    // Now we keep counting until we hit a non delimer
                     for (pos2 = pos + 1; pos2 < line.Length; pos2++)
                     {
                         if (line[pos2] != ' ' && line[pos2] != '\t' && 

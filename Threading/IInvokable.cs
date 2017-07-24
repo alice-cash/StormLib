@@ -29,9 +29,9 @@ using System;
 
 namespace CashLib.Threading
 {
-	//  <summary>
-	//  Description of IInvokable.
-	//  </summary>
+	///  <summary>
+	///  Description of IInvokable.
+	///  </summary>
 	public abstract class Invokable
 	{
         protected Invoker _invoker;

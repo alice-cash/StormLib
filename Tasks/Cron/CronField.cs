@@ -41,7 +41,7 @@ namespace CashLib.Tasks.Cron
 
         protected int[] ProccessEntry(string data)
         {
-            // e split by commas and process each as its own unit
+            // We split by commas and process each as its own unit
             List<int> returnData = new List<int>();
             string[] split;
             if (data.Contains(','))
@@ -53,7 +53,7 @@ namespace CashLib.Tasks.Cron
             {
                 int[] subrange;
                 int divisor = 1;
-                // ull any divisior off
+                // Pull any divisior off
                 if (data.Contains('/'))
                 {
                     split = data.Split('/');
@@ -61,7 +61,7 @@ namespace CashLib.Tasks.Cron
                     divisor = int.Parse(split[1]);
                     data = split[0];
                 }
-                // ill with either the one value or range of values
+                // Fill with either the one value or range of values
                 if (data.Contains('-'))
                 {
                     int min, max;
@@ -76,7 +76,7 @@ namespace CashLib.Tasks.Cron
                 else
                     subrange = new int[] { int.Parse(data) };
 
-                // ull out any values that don't match the divisor.
+                // null out any values that don't match the divisor.
                 if(divisor != 1)
                 {
                     if (divisor < 1) throw new ArgumentException("Invalid divisor!");
@@ -85,7 +85,7 @@ namespace CashLib.Tasks.Cron
                         subrange[i] = subrange[i] % divisor == 0 ? subrange[i] : -1;
                     }
                 }
-                // on't add any values which are outside the range
+                // Don't add any values which are outside the range
                 for (int i = 0; i < subrange.Length; i++)
                 {
                     if (subrange[i] > MinimumValue && subrange[i] < MaximumValue)

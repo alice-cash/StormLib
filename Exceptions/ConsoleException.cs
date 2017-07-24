@@ -36,7 +36,7 @@ namespace CashLib.Exceptions
 {
 	/// <summary>
 	/// Description of ConsoleException.
-	//  </summary>
+	/// </summary>
     public class ConsoleException : CashLibException
 	{
 		public ConsoleException()

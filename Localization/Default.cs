@@ -33,9 +33,9 @@ using System.Globalization;
 
 namespace CashLib.Localization
 {
-	//  <summary>
+	///  <summary>
     ///  Attempts to load a language file based off of the current system culture, en-us, or the first one avalaible.
-	//  </summary>
+	///  </summary>
 	public class DefaultLanguage
 	{
         private static  LanguageStrings _strings;
