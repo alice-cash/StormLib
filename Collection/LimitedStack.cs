@@ -33,11 +33,18 @@ namespace CashLib.Collection
 	/// <summary>
 	/// This stores a limited number of items, De-queuing them automatically once the limit has been met.
 	/// </summary>
-	public class LimitedList<T> : ArrayBase<T>
+	public class LimitedStack<T> : ArrayBase<T>
 	{
 		private int _limit;
-        private T _default;
-		public int Limit{
+        private int _index;
+
+        public override int Count { get
+            {
+                return _index;
+            }
+        }
+
+        public int Limit{
             get{return _limit;}
             set
             {
@@ -53,8 +60,6 @@ namespace CashLib.Collection
                 {
                     T[] newArray = new T[value];
                     Array.Copy(base.array, 0, newArray, 0, _limit);
-                    for (int i = _limit; i < value; i++)
-                        newArray[i] = _default;
 
                     base.array = newArray;
                 }
@@ -62,12 +67,10 @@ namespace CashLib.Collection
                 return;
             }
         }
-		public LimitedList(int limit, T fillWith): base(limit - 1, EqualityComparer<T>.Default, MemoryType.Normal)
+
+		public LimitedStack(int limit): base(limit - 1, EqualityComparer<T>.Default, MemoryType.Normal)
 		{
 			_limit = limit;
-            _default = fillWith;
-			for(int i = 0; i < limit; i++)
-				base.array[i] = fillWith;
 			base.size = limit;
 		}
 		
@@ -77,10 +80,34 @@ namespace CashLib.Collection
 			{
 				throw new ReadOnlyCollectionException();
 			}
-			// Shift it down one, cutting off the last item
-			Array.Copy(base.array, 0, base.array, 1, _limit - 1);
-			base.array[0] = item;
+
+            if (_index < _limit - 1)
+            {
+                _index++;
+                base.array[_index] = item;
+            }
+            else
+            {
+                // Shift it up one, cutting off the oldest item
+                Array.Copy(base.array, 1, base.array, 0, _limit - 1);
+                base.array[_index] = item;
+            }
 		}
+        
+        public T Pop()
+        {
+            if (_index == 0) throw new InvalidOperationException("Stack is empty!");
+            T item = base.array[_index];
+            // Shift it up one, cutting off the oldest item
+            Array.Copy(base.array, 1, base.array, 0, _limit - 1);
+            _index--;
+            return item;
+        }
+
+        public void Push(T item)
+        {
+            Add(item);
+        }
 
         public override System.Collections.Generic.IEnumerator<T> GetEnumerator()
         {

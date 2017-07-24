@@ -32,9 +32,9 @@ using C5;
 
 namespace CashLib.Localization
 {
-	/// <summary>
-	/// Description of LanguageStrings.
-	/// </summary>
+	//  <summary>
+	//  Description of LanguageStrings.
+	//  </summary>
 	public class LanguageStrings
 	{
 		private static List<LanguageStrings> _languageStrings;
@@ -89,7 +89,7 @@ namespace CashLib.Localization
 				if(line.StartsWith("#")) continue;
                 if (!line.Contains(" ") && !line.Contains("\t")) continue;
 
-                //We need to stop at the first space or \t.
+                // e need to stop at the first space or \t.
                 for (pos = 0; pos < line.Length; pos++)
                 {
                     if (line[pos] == ' ' || line[pos] == '\t')

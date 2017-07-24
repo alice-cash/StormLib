@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Collection\LimitedStack.cs" />
     <Compile Include="Collection\LimitedList.cs" />
     <Compile Include="Collection\SortedList.cs" />
     <Compile Include="Diagnostics\ConsoleTraceListiner.cs" />

@@ -30,9 +30,9 @@ using System.Runtime.Serialization;
 
 namespace CashLib.Exceptions
 {
-    /// <summary>
-    /// Desctiption of ModuleLoadException.
-    /// </summary>
+    ///  <summary>
+    ///  Desctiption of ModuleLoadException.
+    ///  </summary>
     public class ModuleLoadException : CashLibException
     {
         public ModuleLoadException()

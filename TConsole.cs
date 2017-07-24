@@ -71,15 +71,15 @@ namespace CashLib
         public string Value;
         public ConsoleCommandState State;
 
-        public static ConsoleResponse NewSucess(string data)
+        public static ConsoleResponse Succeeded(string data)
         {
             return new ConsoleResponse() { State = ConsoleCommandState.Sucess, Value = data };
         }
-        public static ConsoleResponse NewFailure(string data)
+        public static ConsoleResponse Failed(string data)
         {
             return new ConsoleResponse() { State = ConsoleCommandState.Failure, Value = data };
         }
-        public static ConsoleResponse NewFailure()
+        public static ConsoleResponse Failed()
         { 
             return new ConsoleResponse() { State = ConsoleCommandState.Failure, Value = "" };
         }
@@ -150,9 +150,9 @@ namespace CashLib
 
 
 
-    /// <summary>
-    /// This is the back end for the Console system.
-    /// </summary>
+    ///  <summary>
+    ///  This is the back end for the Console system.
+    ///  </summary>
     public static class Console
     {
         private static HashDictionary<string, ConsoleVarable> _varables;
@@ -187,7 +187,7 @@ namespace CashLib
             if (split.Length == 2) subLine = split[1];
 
             TabData data = TabInput(subLine);
-            data.Line = split[0] + " " + data.Line;
+            // ata.Line = split[0] + " " + data.Line;
             return data;
         }
 
@@ -237,9 +237,9 @@ namespace CashLib
             lock (_varables)
                 if (ValueContains(name))
                 {
-                    return ConsoleResponse.NewSucess(_varables[name].Value);
+                    return ConsoleResponse.Succeeded(_varables[name].Value);
                 }
-            return ConsoleResponse.NewFailure();
+            return ConsoleResponse.Failed();
         }
 
         public static ConsoleResponseBoolean GetOnOff(string name)
@@ -276,6 +276,28 @@ namespace CashLib
                 else
                 {
                     _varables.Add(name, value);
+                }
+        }
+
+        public static ConsoleResponse SetValue(string name, string value)
+        {
+            lock (_varables)
+                if (_varables.Contains(name))
+                {              
+                    if (_varables[name].ValidCheck == null || _varables[name].ValidCheck(value).Sucess)
+                    {
+                        ConsoleVarable cv = _varables[name];
+                        cv.Value = value;
+                        _varables[name] = cv;
+                        return ConsoleResponse.Succeeded(value);
+                    } else
+                    {
+                        return ConsoleResponse.Failed(DefaultLanguage.Strings.GetFormatedString("Console_Validation_Failure", name, value));
+                    }
+                }
+                else
+                {
+                    return ConsoleResponse.Failed("No such variable " + name);
                 }
         }
 
@@ -343,16 +365,18 @@ namespace CashLib
         public static TabData TabInput(string line)
         {
             string[] matches;
+            string[] split = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            
+
             lock (_varables)
             {
                 line = line.TrimStart();
                 if (line.Contains(" "))
                 {
                     TabData subResponse;
-                    string[] split = line.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                     string trimline = split[0];
 
-                    //Get possible results from module. 
+                    // et possible results from module. 
                     if (_varables.Contains(trimline))
                         if (_varables[trimline].TabFunction == null)
                             return TabData.Failue();
@@ -392,28 +416,31 @@ namespace CashLib
                     if (sortedMatches.Count == 1)
                         return new TabData() { Result = true, Line = sortedMatches[0] }; ;
 
-                    //Expand it out to match the closest match of any.
+                    // xpand it out to match the closest match of any.
                     matches = sortedMatches.ToArray();
                 }
             }
 
-            int length = line.Length;
-
-            char c;
-            while (matches[0].Length > length)
+            if (split.Length > 0)
             {
-                //length is always 1 more than the index,
-                //this means a length of 1 will attempt to grab an index of 2;
-                c = matches[0][length];
-                foreach (string entry in matches)
+                int length = split[split.Length - 1].Length;
+
+                char c;
+                while (matches[0].Length > length)
                 {
-                    if (entry.Length == length || entry[length] != c)
-                        goto @break; //no point in continuing                        
+                    // ength is always 1 more than the index,
+                    // his means a length of 1 will attempt to grab an index of 2;
+                    c = matches[0][length];
+                    foreach (string entry in matches)
+                    {
+                        if (entry.Length == length || (entry.Length > length && entry[length] != c))
+                            goto @break; // o point in continuing                        
+                    }
+                    line += c;
+                    length++;
                 }
-                line += c;
-                length++;
+                @break:;
             }
-            @break:;
 
             return new TabData() { Result = true, Line = line, TabStrings = matches };
 
@@ -525,10 +552,10 @@ namespace CashLib
                             throw new InvalidVarableNameExceptions(string.Format("{0} does not exist", name));
                         else
                             continue;
-                    //for(int lineid = 0; lineid < fileLines.Count; lineid++)
-                    //{
+                    // or(int lineid = 0; lineid < fileLines.Count; lineid++)
+                    // 
                         SetFileValue(fileLines, name, currentValue.Value);
-                    //}
+                    // 
                 }
 
                 try
@@ -561,11 +588,11 @@ namespace CashLib
                     }
                     if (array[i][key.Length] == ' ' || array[i][key.Length] == '\t' || array[i][key.Length] == '=')
                     {
-                        //We want to preserve any space / tab / equals fuckery thats in the config
-                        //I sort of regret that requirement
+                        // e want to preserve any space / tab / equals fuckery thats in the config
+                        ///  sort of regret that requirement
 
                         int pos, pos2;
-                        //We need to stop at the first space, \t, or =.
+                        // e need to stop at the first space, \t, or =.
                         for (pos = 0; pos < array[i].Length; pos++)
                         {
                             if (array[i][pos] == ' ' || array[i][pos] == '\t' || array[i][pos] == '=' )
@@ -577,7 +604,7 @@ namespace CashLib
                         bool isequals = false;
                         if (array[i][pos] == '=') isequals = true;
 
-                        //Now we keep counting until we hit a non delimer
+                        // ow we keep counting until we hit a non delimer
                         for (pos2 = pos + 1; pos2 < array[i].Length; pos2++)
                         {
                             if (array[i][pos2] != ' ' && array[i][pos2] != '\t' && 
@@ -589,7 +616,7 @@ namespace CashLib
                         array[i] = string.Format("{0}{1}{2}", key, array[i].Substring(pos, pos2 - pos), value);
                         return;
                     }
-                    //If it didn't match it falls through to the next line
+                    // f it didn't match it falls through to the next line
                 }
             }
             array.Add(string.Format("{0}={1}", key, value));
@@ -620,7 +647,7 @@ namespace CashLib
                     if (line.StartsWith("#")) continue;
                     if (!line.Contains(" ") && !line.Contains("\t") && !line.Contains("=")) continue;
 
-                    //We need to stop at the first space, \t, or =.
+                    // e need to stop at the first space, \t, or =.
                     for (pos = 0; pos < line.Length; pos++)
                     {
                         if (line[pos] == ' ' || line[pos] == '\t' || line[pos] == '=')
@@ -630,7 +657,7 @@ namespace CashLib
                     bool isequals = false;
                     if (line[pos] == '=') isequals = true;
 
-                    //Now we keep counting until we hit a non delimer
+                    // ow we keep counting until we hit a non delimer
                     for (pos2 = pos + 1; pos2 < line.Length; pos2++)
                     {
                         if (line[pos2] != ' ' && line[pos2] != '\t' && 
@@ -746,8 +773,10 @@ namespace CashLib
         {
             if (s == null)
                 return;
-            
-            Trace.WriteLine(string.Format(s, format));
+            if(format.Length == 0)
+                Trace.WriteLine(s);
+            else
+                Trace.WriteLine(string.Format(s, format));
         }
 
         public static void WriteLine(string s, params object[] format)

@@ -29,9 +29,9 @@ using System;
 
 namespace CashLib.Threading
 {
-	/// <summary>
-	/// Contains data used by a class that uses an invoke
-	/// </summary>
+	//  <summary>
+	//  Contains data used by a class that uses an invoke
+	//  </summary>
 	struct InvokeItem
 	{
 		private System.Action<object> _action;

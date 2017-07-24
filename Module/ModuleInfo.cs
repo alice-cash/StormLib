@@ -34,14 +34,14 @@ using System.Collections.Generic;
 
 namespace CashLib.Module
 {
-	/// <summary>
-	/// Description of ModuleInfo.
-	/// </summary>
+	//  <summary>
+	//  Description of ModuleInfo.
+	//  </summary>
 	public static class ModuleInfo
 	{
-        /// <summary>
-        /// Loads Modules in the assembly and optionally the SharedLibrary.
-        /// </summary>
+        ///  <summary>
+        ///  Loads Modules in the assembly and optionally the SharedLibrary.
+        ///  </summary>
 		public static void LoadModules(Assembly LookIn, bool SharedLibrary)
 		{
             LoadAssemblyModules(LookIn);
@@ -61,7 +61,7 @@ namespace CashLib.Module
 
         private static void LoadAssemblyModules(Assembly target)
         {
-            //we simply use reflection to call a loading class for each module.
+            // e simply use reflection to call a loading class for each module.
             foreach (Type type in target.GetTypes())
             {
                 if (InterfaceTest(type))

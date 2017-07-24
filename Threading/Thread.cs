@@ -20,6 +20,7 @@ namespace CashLib.Threading
         {
             _tasks = new List<IThreadTask>();
             thread = new System.Threading.Thread(ThreadLoop);
+            thread.Name = name;
         }
 
         [ThreadSafe(ThreadSafeFlags.ThreadSafe)]
@@ -34,27 +35,41 @@ namespace CashLib.Threading
             this.InvokeMethod(() => { _tasks.Add(task); task.Start(); });
         }
 
-        /// <summary>
-        /// Performs an asynchronous thread stop. 
-        /// Does not immediatly stop the thread, the thread finishes executing its current task.
-        /// </summary>
+        ///  <summary>
+        ///  Performs an asynchronous thread stop. 
+        ///  Does not immediatly stop the thread, Gives the thread the specified seconds to terminate.
+        ///  </summary>
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
-        public void Stop()
+        public void Stop(int stopTimeout = 5)
         {
-            this.InvokeMethod(() => { _threadRunning = false; SendStop(); });
+            this.InvokeMethod(() => { _threadRunning = false; SendStop(false); });
+            WaitForStop(stopTimeout);
         }
 
-        private void SendStop()
+        private void SendStop(bool force)
         {
             foreach (IThreadTask task in _tasks)
             {
-                task.Stop();
+                task.Stop(force);
             }
+        }
+
+        private void WaitForStop(int stopTimeout)
+        {
+            DateTime EndTime = DateTime.Now.AddSeconds(stopTimeout);
+            while(DateTime.Now <= EndTime)
+            {
+                System.Threading.Thread.Yield();
+                if (!thread.IsAlive)
+                    return;
+            }
+            thread.Abort();
+            SendStop(true);
         }
 
         private void ThreadLoop()
         {
-            //We need to take control of our own thread enforcer before running.
+            // We need to take control of our own thread enforcer before running.
             base.ChangeThreadOwner();
 
             _threadRunning = true;
@@ -63,7 +78,7 @@ namespace CashLib.Threading
 
             while (_threadRunning)
             {
-                //Handle invoked commands
+                // handle invoked commands
                 this.PollInvokes();
 
                 foreach(IThreadTask task in _tasks)

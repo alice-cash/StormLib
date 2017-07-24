@@ -32,9 +32,9 @@ using System.Diagnostics;
 
 namespace CashLib
 {
-    /// <summary>
-    /// Adds some functionality to the Stopwatch class.
-    /// </summary>
+    ///  <summary>
+    ///  Adds some functionality to the Stopwatch class.
+    ///  </summary>
     public class Timer : Stopwatch
     {
         static Timer()

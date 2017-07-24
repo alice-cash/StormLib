@@ -10,6 +10,6 @@ namespace CashLib.Threading
     {
         void RunTask();
         void Start();
-        void Stop();
+        void Stop(bool force);
     }
 }

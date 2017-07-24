@@ -51,7 +51,7 @@ namespace CashLib.Tasks
 
         }
 
-        public void Stop()
+        public void Stop(bool force)
         {
 
         }

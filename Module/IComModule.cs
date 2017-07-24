@@ -30,6 +30,6 @@ namespace CashLib.Module
 {
 	public interface IComModule
 	{
-//		void Communication(Connection Sender, ByteReader data);
+// 	void Communication(Connection Sender, ByteReader data);
 	}
 }

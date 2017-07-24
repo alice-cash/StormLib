@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace CashLib.Tasks.Cron
 {
-    /// <summary>
-    /// Represents the DAY field in a cron entry
-    /// </summary>
-    /// <remarks>
-    /// </remarks>
+    ///  <summary>
+    ///  Represents the DAY field in a cron entry
+    ///  </summary>
+    ///  <remarks>
+    ///  </remarks>
     internal class Day : CronField
     {
         public override int MinimumValue { get { return 1; } }

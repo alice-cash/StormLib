@@ -33,9 +33,9 @@ using System.Globalization;
 
 namespace CashLib.Localization
 {
-	/// <summary>
-    /// Attempts to load a language file based off of the current system culture, en-us, or the first one avalaible.
-	/// </summary>
+	//  <summary>
+    ///  Attempts to load a language file based off of the current system culture, en-us, or the first one avalaible.
+	//  </summary>
 	public class DefaultLanguage
 	{
         private static  LanguageStrings _strings;
@@ -61,9 +61,9 @@ namespace CashLib.Localization
             InitAs(CultureInfo.InstalledUICulture, languages);
         }
 
-        /// <summary>
-        /// Will attempt to load a language file based off of the provided culture, otherwise it will default to either the system culture, en-us, or the first one avalaible.
-        /// </summary>
+        ///  <summary>
+        ///  Will attempt to load a language file based off of the provided culture, otherwise it will default to either the system culture, en-us, or the first one avalaible.
+        ///  </summary>
         public static void InitDefaultAs(CultureInfo ci)
         {
             var languages = LanguageStrings.GetAvalableLanguages();

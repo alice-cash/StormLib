@@ -34,9 +34,9 @@ using System;
 
 namespace CashLib.Exceptions
 {
-	/// <summary>
-	/// Description of ExceptonInvalidVarableName.
-	/// </summary>
+	//  <summary>
+	//  Description of ExceptonInvalidVarableName.
+	//  </summary>
     public class InvalidVarableNameExceptions : CashLibException
 	{
 		public InvalidVarableNameExceptions()

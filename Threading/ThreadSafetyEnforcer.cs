@@ -30,9 +30,9 @@ using System.Threading;
 
 namespace CashLib.Threading
 {
-    /// <summary>
-    /// Manage and verify thread safety, throwing an exception when a violation has occurred.
-    /// </summary>
+    ///  <summary>
+    ///  Manage and verify thread safety, throwing an exception when a violation has occurred.
+    ///  </summary>
     [ThreadSafe(ThreadSafeFlags.ThreadSafe)]
     public sealed class ThreadSafetyEnforcer
     {
@@ -41,31 +41,31 @@ namespace CashLib.Threading
         int _safeThreadID;
         string _identifier;
 
-        /// <summary>
-        /// Returns if the instance is enforcing safe calls.
-        /// </summary>
+        ///  <summary>
+        ///  Returns if the instance is enforcing safe calls.
+        ///  </summary>
         public bool EnforcingThreadSafety
         {
             get { return _enforceThreadSafeCalls; }
         }
 
-        /// <summary>
-        /// Takes the thread ID used to create it and uses it when CheckThreadSafety and EnforceThreadSafety are called. EnforcingThreadSafety is enabled.
-        /// </summary>
-        /// <param name="identifier">This is used when throwing exceptions.</param>
+        ///  <summary>
+        ///  Takes the thread ID used to create it and uses it when CheckThreadSafety and EnforceThreadSafety are called. EnforcingThreadSafety is enabled.
+        ///  </summary>
+        ///  <param name="identifier">This is used when throwing exceptions.</param>
         public ThreadSafetyEnforcer(string identifier)
             : this(identifier, true)
         {
         }
 
-        /// <summary>
-        /// Takes the thread ID used to create it and uses it when CheckThreadSafety and EnforceThreadSafety are called.
-        /// </summary>
-        /// <param name="identifier">This is used when throwing exceptions.</param>
-        /// <param name="enforceThreadSafety">
-        /// This enables or disables enforcement of thread safety in the EnforceThreadSafety method.
-        /// When set to false, EnforceThreadSafety will never throw an exception.
-        /// </param>
+        ///  <summary>
+        ///  Takes the thread ID used to create it and uses it when CheckThreadSafety and EnforceThreadSafety are called.
+        ///  </summary>
+        ///  <param name="identifier">This is used when throwing exceptions.</param>
+        ///  <param name="enforceThreadSafety">
+        ///  This enables or disables enforcement of thread safety in the EnforceThreadSafety method.
+        ///  When set to false, EnforceThreadSafety will never throw an exception.
+        ///  </param>
         public ThreadSafetyEnforcer(string identifier, bool enforceThreadSafety)
         {
             _enforceThreadSafeCalls = enforceThreadSafety;
@@ -74,9 +74,9 @@ namespace CashLib.Threading
 
         }
 
-        /// <summary>
-        /// Throws an exception when the Thread Check fails.
-        /// </summary>
+        ///  <summary>
+        ///  Throws an exception when the Thread Check fails.
+        ///  </summary>
         [ThreadSafe(ThreadSafeFlags.ThreadSafeEnforced)]
         public void EnforceThreadSafety()
         {
@@ -84,30 +84,30 @@ namespace CashLib.Threading
                 throw new InvalidOperationException(string.Format("Cross-thread Access to '{0}' is not permitted from this scope.", _identifier));
         }
 
-        /// <summary>
-        /// Returns true if the current thread is the same as the Original thread.
-        /// </summary>
+        ///  <summary>
+        ///  Returns true if the current thread is the same as the Original thread.
+        ///  </summary>
         [ThreadSafe(ThreadSafeFlags.ThreadSafe)]
         public bool IsSameThread()
         {
             return _safeThreadID == GetManagedThreadId();
         }
 
-        /// <summary>
-        /// Retrieve the current ThreadID.
-        /// </summary>
+        ///  <summary>
+        ///  Retrieve the current ThreadID.
+        ///  </summary>
         private int GetManagedThreadId()
         {
             return System.Threading.Thread.CurrentThread.ManagedThreadId;
         }
 
-        /// <summary>
-        /// Changes the thread thread owner to the current thread.
-        /// </summary>
-        /// <remarks>This is only threadsafe when the old thread has invoked the new thread 
-        /// to transfer Ownership. Even in the event a third thread reads it during a write, 
-        /// it will be for an "IsSameThread" or "EnforceThreadSafty" call which will fail in 
-        /// any case, thread 3 != Thread 1 or Thread 2.</remarks>
+        ///  <summary>
+        ///  Changes the thread thread owner to the current thread.
+        ///  </summary>
+        ///  <remarks>This is only threadsafe when the old thread has invoked the new thread 
+        ///  to transfer Ownership. Even in the event a third thread reads it during a write, 
+        ///  it will be for an "IsSameThread" or "EnforceThreadSafty" call which will fail in 
+        ///  any case, thread 3 != Thread 1 or Thread 2.</remarks>
         [ThreadSafe(ThreadSafeFlags.ThreadUnsafe)]
         public void ChangeThreadOwner()
         {
