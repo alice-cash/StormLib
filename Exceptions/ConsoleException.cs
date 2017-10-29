@@ -32,12 +32,12 @@
  */
 using System;
 
-namespace CashLib.Exceptions
+namespace StormLib.Exceptions
 {
 	/// <summary>
 	/// Description of ConsoleException.
 	/// </summary>
-    public class ConsoleException : CashLibException
+    public class ConsoleException : StormLibException
 	{
 		public ConsoleException()
 		{

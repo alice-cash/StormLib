@@ -29,9 +29,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
-using CashLib.Threading;
+using StormLib.Threading;
 
-namespace CashLib.Tasks
+namespace StormLib.Tasks
 {
     public class Scheduler: Invoker, IThreadTask
     {
@@ -56,10 +56,24 @@ namespace CashLib.Tasks
 
         }
 
-        [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
+        public void ReflectionFromFile(string filename)
+        {
+
+
+        }
+
+
+       [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
         public void AddTask(string input, Action command)
         {
             AddTask(new CronTask(input, command));
+        }
+
+
+        [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]
+        public void AddTask(string minute, string hour, string day, string month, string weekday, Action command)
+        {
+            AddTask(new CronTask(minute, hour, day, month, weekday, command));
         }
 
         [ThreadSafe(ThreadSafeFlags.ThreadSafeAsynchronous)]

@@ -6,8 +6,8 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{78870F52-BE99-459A-9A5A-48135D1CAE81}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>CashLib</RootNamespace>
-    <AssemblyName>CashLib</AssemblyName>
+    <RootNamespace>StormLib</RootNamespace>
+    <AssemblyName>StormLib</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -36,7 +36,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="C5, Version=2.4.5947.17248, Culture=neutral, PublicKeyToken=282361b99ded7e8e, processorArchitecture=MSIL">
-      <HintPath>..\packages\C5.2.4.5947.17249\lib\net45\C5.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>F:\Projects\Code\C#\tortoise-mog-code\packages\C5.2.5.3\lib\net45\C5.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -56,7 +57,7 @@
     <Compile Include="Exceptions\InvalidVarableNameExceptions.cs" />
     <Compile Include="Exceptions\LogicException.cs" />
     <Compile Include="Exceptions\ModuleLoadException.cs" />
-    <Compile Include="Exceptions\CashLibException.cs" />
+    <Compile Include="Exceptions\StormLibException.cs" />
     <Compile Include="ExecutionState.cs" />
     <Compile Include="Localization\Default.cs" />
     <Compile Include="Localization\LanguageStrings.cs" />
@@ -73,7 +74,7 @@
     <Compile Include="Threading\IThreadTask.cs" />
     <Compile Include="Tasks\Scheduler.cs" />
     <Compile Include="Tasks\CronTask.cs" />
-    <Compile Include="TConsole.cs" />
+    <Compile Include="Console.cs" />
     <Compile Include="Threading\IInvokable.cs" />
     <Compile Include="Threading\InvokeItem.cs" />
     <Compile Include="Threading\InvokeManager.cs" />

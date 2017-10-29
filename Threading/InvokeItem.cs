@@ -27,7 +27,7 @@
  */
 using System;
 
-namespace CashLib.Threading
+namespace StormLib.Threading
 {
 	///  <summary>
 	///  Contains data used by a class that uses an invoke

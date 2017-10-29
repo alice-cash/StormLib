@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashLib.Threading
+namespace StormLib.Threading
 {
     ///  <summary>
     ///  Provides a managed way to process and transfer Invoker objects and offers thread transfer options.

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashLib.Tasks.Cron
+namespace StormLib.Tasks.Cron
 {
     ///  <summary>
     ///  Represents the DAY field in a cron entry

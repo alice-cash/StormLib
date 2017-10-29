@@ -28,7 +28,7 @@
 using System;
 using System.Threading;
 
-namespace CashLib.Threading
+namespace StormLib.Threading
 {
     ///  <summary>
     ///  Manage and verify thread safety, throwing an exception when a violation has occurred.

@@ -32,7 +32,7 @@ using System.Reflection;
 using System.Collections.Generic;
 
 
-namespace CashLib.Module
+namespace StormLib.Module
 {
 	///  <summary>
 	///  Description of ModuleInfo.

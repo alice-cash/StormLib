@@ -27,7 +27,7 @@
  */
 using System;
 
-namespace CashLib.Module
+namespace StormLib.Module
 {
 	///  <summary>
 	///  Description of ModuleLoader.

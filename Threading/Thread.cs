@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CashLib.Tasks;
-using CashLib.Threading;
+using StormLib.Tasks;
+using StormLib.Threading;
 
-namespace CashLib.Threading
+namespace StormLib.Threading
 {
     public class Thread : InvokeManager
     {

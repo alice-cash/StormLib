@@ -28,7 +28,7 @@
 using System;
 using C5;
 
-namespace CashLib.Collection
+namespace StormLib.Collection
 {
 	/// <summary>
 	/// This stores a limited number of items, De-queuing them automatically once the limit has been met.

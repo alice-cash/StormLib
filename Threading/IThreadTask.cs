@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashLib.Threading
+namespace StormLib.Threading
 {
     public interface IThreadTask
     {

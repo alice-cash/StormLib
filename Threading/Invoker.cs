@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 using System.Threading;
 
-namespace CashLib.Threading
+namespace StormLib.Threading
 {
     ///  <summary>
     ///  The invoker class is used to Invoke methods across threads.
@@ -106,7 +106,7 @@ namespace CashLib.Threading
         ///  </summary>
         public Invoker()
         {
-            _threadSafety = new ThreadSafetyEnforcer("Generic-CashLib.Threading.Invoker");
+            _threadSafety = new ThreadSafetyEnforcer("Generic-StormLib.Threading.Invoker");
             _invokeList = new Queue<InvokeItem>();
         }
 

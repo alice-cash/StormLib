@@ -30,7 +30,7 @@
 using System;
 using System.Diagnostics;
 
-namespace CashLib
+namespace StormLib
 {
     ///  <summary>
     ///  Adds some functionality to the Stopwatch class.

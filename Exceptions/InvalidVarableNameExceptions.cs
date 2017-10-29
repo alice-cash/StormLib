@@ -32,12 +32,12 @@
  */
 using System;
 
-namespace CashLib.Exceptions
+namespace StormLib.Exceptions
 {
 	///  <summary>
 	///  Description of ExceptonInvalidVarableName.
 	///  </summary>
-    public class InvalidVarableNameExceptions : CashLibException
+    public class InvalidVarableNameExceptions : StormLibException
 	{
 		public InvalidVarableNameExceptions()
 		{

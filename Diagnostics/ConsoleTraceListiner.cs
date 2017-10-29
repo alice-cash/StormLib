@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Diagnostics;
  
-namespace CashLib.Diagnostics
+namespace StormLib.Diagnostics
 {
     public class ConsoleTraceListiner : TraceListener
     {

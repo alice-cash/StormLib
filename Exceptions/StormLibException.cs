@@ -4,20 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashLib.Exceptions
+namespace StormLib.Exceptions
 {
-    public abstract class CashLibException : Exception
+    public abstract class StormLibException : Exception
     {
-        public CashLibException()
+        public StormLibException()
         {
         }
 
-        public CashLibException(string message)
+        public StormLibException(string message)
             : base(message)
         {
         }
 
-        public CashLibException(string message, Exception innerException)
+        public StormLibException(string message, Exception innerException)
             : base(message, innerException)
         {
         }

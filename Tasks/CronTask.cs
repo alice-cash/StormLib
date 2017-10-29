@@ -30,9 +30,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using CashLib.Tasks.Cron;
+using StormLib.Tasks.Cron;
 
-namespace CashLib.Tasks
+namespace StormLib.Tasks
 {
     public class CronTask
     {
@@ -60,13 +60,23 @@ namespace CashLib.Tasks
 
         public CronTask(string input, Action command)
         {
-            string[] data = input.Split(' ');
+            string[] data = input.Trim().Split(' ');
             if (data.Length != 5) throw new ArgumentException("Argument does not have 5 parts.");
             this.minute = new Minute(data[0]);
             this.hour = new Hour(data[1]);
             this.day = new Day(data[2]);
             this.month = new Month(data[3]);
             this.weekday = new Weekday(data[4]);
+            this.command = command;
+        }
+
+        public CronTask(string minute, string hour, string day, string month, string weekday, Action command)
+        {
+            this.minute = new Minute(minute);
+            this.hour = new Hour(hour);
+            this.day = new Day(day);
+            this.month = new Month(month);
+            this.weekday = new Weekday(weekday);
             this.command = command;
         }
 

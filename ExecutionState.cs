@@ -27,7 +27,7 @@
  */
 using System;
 
-namespace CashLib
+namespace StormLib
 {
     ///  <summary>
     ///  This class is used for the Return value Functions or Methods, when the possibility of failure is there. 

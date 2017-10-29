@@ -28,12 +28,12 @@
 using System;
 using System.Runtime.Serialization;
 
-namespace CashLib.Exceptions
+namespace StormLib.Exceptions
 {
     ///  <summary>
     ///  Desctiption of ModuleLoadException.
     ///  </summary>
-    public class ModuleLoadException : CashLibException
+    public class ModuleLoadException : StormLibException
     {
         public ModuleLoadException()
         {

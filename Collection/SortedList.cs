@@ -34,7 +34,7 @@ using System;
 using C5;
 
 
-namespace CashLib.Collection
+namespace StormLib.Collection
 {
 	/// <summary>
 	/// A sorted LinkedList.

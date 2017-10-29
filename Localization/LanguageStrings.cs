@@ -30,7 +30,7 @@ using System.Collections.Generic;
 using System.IO;
 using C5;
 
-namespace CashLib.Localization
+namespace StormLib.Localization
 {
 	///  <summary>
 	///  Description of LanguageStrings.

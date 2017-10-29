@@ -31,7 +31,7 @@ using System.Globalization;
 
 
 
-namespace CashLib.Localization
+namespace StormLib.Localization
 {
 	///  <summary>
     ///  Attempts to load a language file based off of the current system culture, en-us, or the first one avalaible.

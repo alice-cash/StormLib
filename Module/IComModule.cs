@@ -26,7 +26,7 @@
  * or implied, of Matthew Cash.
  */
 
-namespace CashLib.Module
+namespace StormLib.Module
 {
 	public interface IComModule
 	{

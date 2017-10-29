@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CashLib.Threading
+namespace StormLib.Threading
 {
     ///  <summary>
     ///  Flag state for the ThreadSafeAttribute class.

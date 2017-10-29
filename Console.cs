@@ -33,13 +33,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using C5;
-using CashLib;
-using CashLib.Collection;
-using CashLib.Localization;
-using CashLib.Exceptions;
+using StormLib;
+using StormLib.Collection;
+using StormLib.Localization;
+using StormLib.Exceptions;
 
 
-namespace CashLib
+namespace StormLib
 {
     public enum ConsoleCommandState
     {

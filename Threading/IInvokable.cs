@@ -27,7 +27,7 @@
  */
 using System;
 
-namespace CashLib.Threading
+namespace StormLib.Threading
 {
 	///  <summary>
 	///  Description of IInvokable.
