@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2012 Matthew Cash. All rights reserved.
+ * Copyright 2020 Alice Cash. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -11,9 +11,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  * 
- * THIS SOFTWARE IS PROVIDED BY Matthew Cash ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Alice Cash ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Matthew Cash OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Alice Cash OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -23,7 +23,7 @@
  * 
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Matthew Cash.
+ * or implied, of Alice Cash.
  */
 using System;
 using System.Collections.Generic;
@@ -76,6 +76,11 @@ namespace StormLib.Localization
                 return string.Format(Language[name], args).Trim();
             return string.Format(ErrorNoLocal, name).Trim();
         }
+
+        public bool ContainsName(string name)
+        {
+            return Language.Contains(name);
+        }
 		
 
 		public LanguageStrings(string fileName)
@@ -108,7 +113,7 @@ namespace StormLib.Localization
 			
 			if(Language.Contains("Error_No_Local")) _errorNoLocal = Language["Error_No_Local"];
             if (Language.Contains("Language_Name")) _languageName = Language["Language_Name"];
-            if (Language.Contains("Language_DisplayName")) _languageName = Language["Language_DisplayName"];
+            if (Language.Contains("Language_DisplayName")) _languageDisplayName = Language["Language_DisplayName"];
 			
 		}
 		

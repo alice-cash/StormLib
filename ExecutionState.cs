@@ -1,5 +1,5 @@
 ﻿/*
- * Copyright 2013 Matthew Cash. All rights reserved.
+ * Copyright 2013 Alice Cash. All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification, are
  * permitted provided that the following conditions are met:
@@ -11,9 +11,9 @@
  *       of conditions and the following disclaimer in the documentation and/or other materials
  *       provided with the distribution.
  * 
- * THIS SOFTWARE IS PROVIDED BY Matthew Cash ``AS IS'' AND ANY EXPRESS OR IMPLIED
+ * THIS SOFTWARE IS PROVIDED BY Alice Cash ``AS IS'' AND ANY EXPRESS OR IMPLIED
  * WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND
- * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Matthew Cash OR
+ * FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL Alice Cash OR
  * CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
  * CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
  * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
@@ -23,7 +23,7 @@
  * 
  * The views and conclusions contained in the software and documentation are those of the
  * authors and should not be interpreted as representing official policies, either expressed
- * or implied, of Matthew Cash.
+ * or implied, of Alice Cash.
  */
 using System;
 
@@ -55,13 +55,21 @@ namespace StormLib
         ///  </summary
         public static ExecutionState Succeeded(string reason) { return new ExecutionState(true, reason); }
         ///  <summary>
+        ///  This returns a Succeeded result. It allows for a human readable string to be passed along.
+        ///  </summary
+        public static ExecutionState Succeeded(string reason, params string[] args) { return new ExecutionState(true, reason, args); }
+        ///  <summary>
         ///  This returns a Failed result. It allows for a human readable string to be passed along.
         ///  </summary>
         public static ExecutionState Failed(string reason)
         {
+            return Failed(reason, new string[0]);
+        }
+        public static ExecutionState Failed(string reason, params string[] args)
+        {
             if (System.Diagnostics.Debugger.IsAttached)
                 System.Diagnostics.Debugger.Break();
-            return new ExecutionState(false, reason);
+            return new ExecutionState(false, reason, args);
         }
 
         public bool Sucess;
@@ -76,6 +84,12 @@ namespace StormLib
         {
             Sucess = sucess;
             Reason = reason;
+        }
+
+        public ExecutionState(bool sucess, string reason, params string[] args)
+        {
+            Sucess = sucess;
+            Reason = string.Format(reason, args);
         }
 
         public static bool operator true(ExecutionState exestate)
@@ -104,26 +118,29 @@ namespace StormLib
         ///  </summary>
         public static ExecutionState<T> Succeeded(T result) { return new ExecutionState<T>(true, result); }
         ///  <summary>
-        ///  This returns a Failed result, using the default of T as the result's value.
-        ///  </summary>
-        public static ExecutionState<T> Failed()
-        {
-            if (System.Diagnostics.Debugger.IsAttached)
-                System.Diagnostics.Debugger.Break();
-            return new ExecutionState<T>(false, default(T));
-        }
-        ///  <summary>
         ///  This returns a Succeeded result. It allows for a human readable string to be passed along.
         ///  </summary>
         public static ExecutionState<T> Succeeded(T result, string reason) { return new ExecutionState<T>(true, result, reason); }
         ///  <summary>
+        ///  This returns a Succeeded result. It allows for a human readable string to be passed along.
+        ///  </summary>
+        public static ExecutionState<T> Succeeded(T result, string reason, params string[] args) { return new ExecutionState<T>(true, result, reason, args); }
+        ///  <summary>
+        ///  This returns a Failed result, using the default of T as the result's value.
+        ///  </summary>
+        public static ExecutionState<T> Failed() { return Failed(""); }
+        ///  <summary>
+        ///  This returns a Failed result. It allows for a human readable string to be passed along.
+        ///  </summary>
+        public static ExecutionState<T> Failed(string reason) { return Failed(reason, new string[0]); }
+        ///  <summary>
         ///  This returns a Failed result, using the default of T as the result's value. It allows for a human readable string to be passed along.
         ///  </summary>
-        public static ExecutionState<T> Failed(string reason)
+        public static ExecutionState<T> Failed(string reason, params string[] args)
         {
             if (System.Diagnostics.Debugger.IsAttached)
                 System.Diagnostics.Debugger.Break();
-            return new ExecutionState<T>(false, default(T), reason);
+            return new ExecutionState<T>(false, default(T), reason, args);
         }
 
         public bool Sucess;
@@ -142,6 +159,13 @@ namespace StormLib
             Sucess = sucess;
             Result = result;
             Reason = reason;
+        }
+
+        public ExecutionState(bool sucess, T result, string reason, params string[] args)
+        {
+            Sucess = sucess;
+            Result = result;
+            Reason = string.Format(reason, args);
         }
 
 
